@@ -1,735 +1,444 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
-    <title>Tiles Survive [MDG]</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk1ERyDQsNC70YzRj9C90YHQsCDQvNC40YAg0JTQo9C20LHQtdC90LrQsCIsCiAgInNob3J0X25hbWUiOiAi0JzQmNGAINCU0YDRg9C20LHQsCIsCiAgImRlc2NyaXB0aW9uIjogItCh0L7RjtC30L3Ri9C5INC/0L7RgNGC0LDQuyBnaWxrIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjE3MjkiLAogICJ0aGVtZV9jb2xvciI6ICIjZmZjYzAwIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgNTEyIDUxMic+PHJlY3Qgd2lkdGg9JzUxMicgaGVpZ2h0PSc1MTInIHJ4PSc2MCcgZmlsbD0nJTAwMjY1MCcvPjx0ZXh0IHg9JzI1NicgeT0nMzEwJyBmb250LWZhbWlseT0nQXJpYWwnIGZvbnQtc2l6ZT0nMTUwJyBmaWxsPSclMDBhZWVmZicgdGV4dC1hbmNob3I9J21pZGRsZSc+TURHPC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIDUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDG — Мир Дружба</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="bg"></div>
+
+    <!-- ФОН -->
+    <div class="bg-main">
+        <div class="bg-gradient-animated"></div>
+        <div class="bg-noise"></div>
+    </div>
+
+    <div id="scroll-progress" style="width:0%"></div>
 
     <div class="app">
-        <!-- ===== ХЕДЕР ===== -->
-        <header class="hero">
-            <div class="hero-left">
-                <div class="logo-wrap">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0f1729" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="M2 17l10 5 10-5"/>
-                        <path d="M2 12l10 5 10-5"/>
-                    </svg>
+
+        <!-- НАВИГАЦИЯ -->
+        <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                <div class="glass-nav rounded-2xl shadow-2xl shadow-black/50 pointer-events-auto">
+                    <div class="flex justify-between items-center h-[56px] px-4 sm:px-6">
+                        <a href="#" onclick="switchTab('tab-home'); return false;"
+                            class="flex items-center space-x-2 no-underline cursor-pointer flex-shrink-0">
+                            <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                    <path d="M2 17l10 5 10-5" />
+                                    <path d="M2 12l10 5 10-5" />
+                                </svg>
+                            </div>
+                            <span class="text-xl font-black tracking-tight drop-shadow-lg">MDG</span>
+                        </a>
+
+                        <div class="hidden lg:flex items-center space-x-1">
+                            <button class="tab active" data-tab="tab-home"
+                                onclick="switchTab('tab-home')">Главная</button>
+                            <button class="tab" data-tab="tab-squads" onclick="switchTab('tab-squads')">Отряды</button>
+                            <button class="tab" data-tab="tab-heroes" onclick="switchTab('tab-heroes')">Герои</button>
+                            <button class="tab" data-tab="tab-resources"
+                                onclick="switchTab('tab-resources')">Ресурсы</button>
+                            <button class="tab" data-tab="tab-activities"
+                                onclick="switchTab('tab-activities')">Ежедневно</button>
+                            <button class="tab" data-tab="tab-gear" onclick="switchTab('tab-gear')">Снаряжение</button>
+                            <button class="tab" data-tab="tab-tips" onclick="switchTab('tab-tips')">Советы</button>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button id="searchToggleDesktop"
+                                class="hidden lg:flex text-white/60 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                            </button>
+                            <button id="searchToggleMobile"
+                                class="lg:hidden text-white/60 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                            </button>
+                            <button id="menu-btn"
+                                class="lg:hidden text-white/80 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="3" y1="6" x2="21" y2="6" />
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                    <line x1="3" y1="18" x2="21" y2="18" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="hero-titles">
-                    <h1>[MDG] <span>Мир Дружба</span></h1>
-                    <div class="sub">Tiles Survive</div>
-                </div>
-            </div>
-            <div class="hero-right">
-                <div class="search-wrap">
-                    <button class="search-btn" id="searchToggle" aria-label="Поиск">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+
+                <!-- Поиск десктоп -->
+                <div id="searchDesktopContainer"
+                    class="hidden lg:block overflow-hidden transition-all duration-400 ease-in-out"
+                    style="max-height:0;opacity:0;margin-top:0;">
+                    <div class="glass rounded-xl px-4 py-2.5 border border-gold/30 flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
-                        <span>Поиск</span>
-                    </button>
-                    <div class="search-input-expand" id="searchExpand">
-                        <span class="search-icon-inline">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"/>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                            </svg>
-                        </span>
-                        <input type="text" id="searchInput" placeholder="Поиск по порталу..." autofocus>
-                        <button class="search-clear" id="searchClear" aria-label="Очистить поиск">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"/>
-                                <line x1="6" y1="6" x2="18" y2="18"/>
+                        <input type="text" id="searchDesktopInput" placeholder="Поиск по порталу..."
+                            class="flex-1 bg-transparent border-none text-white text-sm placeholder-gray-500 focus:outline-none">
+                        <button id="searchDesktopClose" class="text-gray-500 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
                             </svg>
                         </button>
                     </div>
-                    <div class="search-results-drop" id="searchResultsDrop"></div>
+                    <div id="searchDesktopResults" class="mt-2 space-y-1 max-h-64 overflow-y-auto"></div>
+                </div>
+
+                <!-- Мобильный поиск -->
+                <div id="searchOverlay" class="fixed inset-0 z-[100] hidden">
+                    <div class="absolute inset-0 bg-black/80 backdrop-blur-lg" onclick="closeSearchMobile()"></div>
+                    <div class="relative z-10 max-w-2xl mx-auto px-4 pt-20">
+                        <div class="glass rounded-2xl p-6 border border-gold/20 shadow-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                                <input type="text" id="searchMobileInput" placeholder="Поиск по порталу..."
+                                    class="flex-1 bg-transparent border-none text-white text-lg placeholder-gray-500 focus:outline-none">
+                                <button onclick="closeSearchMobile()"
+                                    class="text-gray-500 hover:text-white transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div id="searchMobileResults" class="mt-4 space-y-2 max-h-[60vh] overflow-y-auto"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="hidden lg:hidden mt-2 pointer-events-auto">
+                    <div class="glass-nav rounded-2xl bg-black/90 backdrop-blur-xl p-4 shadow-2xl">
+                        <div class="space-y-1">
+                            <button class="tab active w-full text-left" data-tab="tab-home"
+                                onclick="switchTab('tab-home')">Главная</button>
+                            <button class="tab w-full text-left" data-tab="tab-squads"
+                                onclick="switchTab('tab-squads')">Отряды</button>
+                            <button class="tab w-full text-left" data-tab="tab-heroes"
+                                onclick="switchTab('tab-heroes')">Герои</button>
+                            <button class="tab w-full text-left" data-tab="tab-resources"
+                                onclick="switchTab('tab-resources')">Ресурсы</button>
+                            <button class="tab w-full text-left" data-tab="tab-activities"
+                                onclick="switchTab('tab-activities')">Ежедневно</button>
+                            <button class="tab w-full text-left" data-tab="tab-gear"
+                                onclick="switchTab('tab-gear')">Снаряжение</button>
+                            <button class="tab w-full text-left" data-tab="tab-tips"
+                                onclick="switchTab('tab-tips')">Советы</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </header>
+        </nav>
 
-        <!-- ===== ТАБЫ ===== -->
-<div class="tabs-wrap">
-    <div class="tabs" id="mainTabs">
-        <button class="tab active" data-tab="tab-home">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            Главная
-        </button>
-        <button class="tab" data-tab="tab-heroes">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M8 3.13a4 4 0 010 7.75"/></svg>
-            Герои
-        </button>
-        <button class="tab" data-tab="tab-squads">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a2 2 0 00-2-2H4a2 2 0 00-2 2v4a2 2 0 002 2h8a2 2 0 002-2z"/><path d="M8 15v2"/><path d="M12 15v2"/><path d="M20 15v2"/><path d="M14 5l3 3 6-6"/><path d="M18 11v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8"/></svg>
-            Отряды
-        </button>
-        <button class="tab" data-tab="tab-gear">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-            Снаряга
-        </button>
-        <button class="tab" data-tab="tab-resources">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-            Ресурсы
-        </button>
-        <button class="tab" data-tab="tab-tips">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-            Советы
-        </button>
-        <button class="tab" data-tab="tab-donate">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-            Донат
-        </button>
+        <!-- CONTENT -->
+        <div class="content pt-20" id="contentArea">
 
-        <!-- Стрелка-подсказка справа от меню -->
-        <div class="tabs-scroll-hint" id="tabsScrollHint">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
-            </svg>
-            <span class="hint-text">Ещё →</span>
-        </div>
-    </div>
-</div>
-
-        <!-- ===== КОНТЕНТ ===== -->
-        <div class="content" id="contentArea">
-
-            <!-- ===== HOME ===== -->
+            <!-- HOME -->
             <div class="panel active" id="tab-home">
-                <div class="section-header">
-                    <span class="section-title">🔥 Актуальная мета</span>
-                    <div class="section-line"></div>
+                <div class="relative py-12 sm:py-16 text-center px-4">
+                    <h1 class="text-4xl sm:text-6xl font-black tracking-tight leading-tight mb-4">
+                        [MDG] <span class="text-gold">Мир Дружба</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+                        Tiles Survive — гайды, составы, прокачка и лайфхаки для топ-игроков
+                    </p>
                 </div>
-                <div class="tip">
-                    <div class="tip-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                            <path d="M8 10h.01" />
+                            <path d="M12 10h.01" />
+                            <path d="M16 10h.01" />
+                        </svg>
+                        <h2 class="text-xl font-bold kinetic-title">Новости</h2>
+                        <div class="flex-1 h-px bg-gradient-to-r from-gold/20 to-transparent"></div>
                     </div>
-                    <div>
-                        <h4>Топ-состав: 4 Guardians + 1 Gunner</h4>
-                        <p>Nicola (танк) + Layla (фронт/хил) + Rosie (AoE) + Tarzan (бэк DPS) + Tara (DEF бафф). Активирует +15% HP всей команде. Бьёт сильнее по цифрам.</p>
-                    </div>
-                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10" id="newsContainer"></div>
 
-                <div class="section-header">
-                    <span class="section-title">🗺️ Быстрый доступ</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="card-grid" id="homeCards">
-                    <div class="card" onclick="switchTab('tab-heroes')">
-                        <div class="card-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                                <path d="M16 3.13a4 4 0 010 7.75"/>
-                                <path d="M8 3.13a4 4 0 010 7.75"/>
-                            </svg>
-                        </div>
-                        <h3>Герои</h3>
-                        <p>Тир-лист, навыки, роли и приоритеты прокачки.</p>
-                        <div class="tag tag-accent">S-Tier внутри</div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <h2 class="text-xl font-bold kinetic-title">Быстрый доступ</h2>
+                        <div class="flex-1 h-px bg-gradient-to-r from-gold/20 to-transparent"></div>
                     </div>
-                    <div class="card" onclick="switchTab('tab-squads')">
-                        <div class="card-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 9V5a2 2 0 00-2-2H4a2 2 0 00-2 2v4a2 2 0 002 2h8a2 2 0 002-2z"/>
-                                <path d="M8 15v2"/><path d="M12 15v2"/><path d="M20 15v2"/>
-                                <path d="M14 5l3 3 6-6"/>
-                                <path d="M18 11v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8"/>
-                            </svg>
-                        </div>
-                        <h3>Отряды</h3>
-                        <p>Мета-составы, расстановка, синергия, фракции.</p>
-                        <div class="tag tag-accent">4+1</div>
-                    </div>
-                    <div class="card" onclick="switchTab('tab-gear')">
-                        <div class="card-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-                            </svg>
-                        </div>
-                        <h3>Снаряжение</h3>
-                        <p>Hero Gear, Chief Gear, Signature Gear. Редкость.</p>
-                        <div class="tag tag-green">Полный гайд</div>
-                    </div>
-                    <div class="card" onclick="switchTab('tab-resources')">
-                        <div class="card-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                                <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
-                            </svg>
-                        </div>
-                        <h3>Ресурсы</h3>
-                        <p>Таблицы затрат, приоритеты развития базы.</p>
-                        <div class="tag tag-purple">Электростанция</div>
-                    </div>
-                    <div class="card" onclick="switchTab('tab-tips')">
-                        <div class="card-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                            </svg>
-                        </div>
-                        <h3>Советы</h3>
-                        <p>Топ-лайфхаки от опытных игроков.</p>
-                        <div class="tag tag-red">Must read</div>
-                    </div>
-                    <div class="card" onclick="switchTab('tab-donate')">
-                        <div class="card-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-                            </svg>
-                        </div>
-                        <h3>Донат</h3>
-                        <p>Поддержать проект, получить бонусы.</p>
-                        <div class="tag tag-orange">Спасибо!</div>
-                    </div>
-                </div>
-
-                <div class="ad-banner">
-                    <span class="ad-label">🔥 Топ</span>
-                    <div class="ad-content">
-                        <span class="ad-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-                        </span>
-                        <span class="ad-text">Пополни баланс и получи бонус! <span class="ad-link">Donation Shop →</span></span>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <button onclick="switchTab('tab-squads')"
+                            class="glass-card rounded-xl p-5 text-center hover:border-gold/30 tilt-card relative overflow-hidden">
+                            <div class="glare-effect absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
+                            <div class="text-3xl mb-2 relative z-10">⚔️</div>
+                            <span class="text-sm font-semibold relative z-10">Отряды</span>
+                        </button>
+                        <button onclick="switchTab('tab-heroes')"
+                            class="glass-card rounded-xl p-5 text-center hover:border-gold/30 tilt-card relative overflow-hidden">
+                            <div class="glare-effect absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
+                            <div class="text-3xl mb-2 relative z-10">🦸</div>
+                            <span class="text-sm font-semibold relative z-10">Герои</span>
+                        </button>
+                        <button onclick="switchTab('tab-resources')"
+                            class="glass-card rounded-xl p-5 text-center hover:border-gold/30 tilt-card relative overflow-hidden">
+                            <div class="glare-effect absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
+                            <div class="text-3xl mb-2 relative z-10">📊</div>
+                            <span class="text-sm font-semibold relative z-10">Ресурсы</span>
+                        </button>
+                        <button onclick="switchTab('tab-activities')"
+                            class="glass-card rounded-xl p-5 text-center hover:border-gold/30 tilt-card relative overflow-hidden">
+                            <div class="glare-effect absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
+                            <div class="text-3xl mb-2 relative z-10">📅</div>
+                            <span class="text-sm font-semibold relative z-10">Ежедневно</span>
+                        </button>
+                        <button onclick="switchTab('tab-tips')"
+                            class="glass-card rounded-xl p-5 text-center hover:border-gold/30 tilt-card relative overflow-hidden">
+                            <div class="glare-effect absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"></div>
+                            <div class="text-3xl mb-2 relative z-10">💡</div>
+                            <span class="text-sm font-semibold relative z-10">Советы</span>
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- ===== HEROES ===== -->
-            <div class="panel" id="tab-heroes">
-                <div class="section-header">
-                    <span class="section-title">🏆 S-Tier</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-s">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Rosie <span class="tier tier-s">S</span></h4>
-                        <div class="hero-role">Guardian · AoE Carry · Gen 1</div>
-                        <p>Королева AoE-урона. Массовые атаки + самоисцеление. Часто остаётся последней живой и добивает врагов.</p>
-                        <div class="hero-stats">
-                            <span class="hero-stat">⚔️ ATK% + Crit</span>
-                            <span class="hero-stat">🛡️ Глубокий бэк</span>
-                            <span class="hero-stat">⭐ Signature #1</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-s">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Nicola <span class="tier tier-s">S</span></h4>
-                        <div class="hero-role">Guardian · Tank · Gen 2</div>
-                        <p>Два типа щитов = 2-3 запасных HP-бара. Масштабируется в бою, не сгорает в начале. Без него весь отряд падает.</p>
-                        <div class="hero-stats">
-                            <span class="hero-stat">❤️ HP% + DEF%</span>
-                            <span class="hero-stat">🛡️ Фронт, центр</span>
-                            <span class="hero-stat">🔒 Must have</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-s">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Layla <span class="tier tier-s">S</span></h4>
-                        <div class="hero-role">Gunner · Support/Healer · Gen 2</div>
-                        <p>+26% HP на 30 уровне. На фронте с Николой становится вторым танком, который лечит под ударом. Не прячь в бэк!</p>
-                        <div class="hero-stats">
-                            <span class="hero-stat">❤️ HP% + DEF%</span>
-                            <span class="hero-stat">🛡️ Фронт, рядом с Николой</span>
-                            <span class="hero-stat">💊 Team heal</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-s">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Tarzan <span class="tier tier-s">S</span></h4>
-                        <div class="hero-role">Guardian · Backline DPS · Gen 2</div>
-                        <p>Ульта бьёт по вражескому бэклайну. Убивает саппортов и дамагеров до того, как они раскачиваются.</p>
-                        <div class="hero-stats">
-                            <span class="hero-stat">⚔️ ATK% + Crit</span>
-                            <span class="hero-stat">🛡️ Центр бэка</span>
-                            <span class="hero-stat">💀 Backline killer</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-s">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Tara <span class="tier tier-s">S</span></h4>
-                        <div class="hero-role">Guardian · Defensive Support · Gen 2</div>
-                        <p>Пассивный % DEF всей команде. Складывается с щитами Николы, HP Лайлы и баффами оружия.</p>
-                        <div class="hero-stats">
-                            <span class="hero-stat">🛡️ DEF% на все слоты</span>
-                            <span class="hero-stat">📍 Любая позиция</span>
-                            <span class="hero-stat">🔒 Keystone</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- SQUADS -->
+            <div class="panel" id="tab-squads"></div>
 
-                <div class="section-header">
-                    <span class="section-title">🥈 A-Tier</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-a">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Becca <span class="tier tier-a">A</span></h4>
-                        <div class="hero-role">Gunner · Line DPS · Gen 1</div>
-                        <p>Урон по прямой линии. Хороша против плотных групп. Надёжна, но без самоисцеления Рози.</p>
-                        <div class="hero-stats">
-                            <span class="hero-stat">⚔️ ATK% + Crit</span>
-                            <span class="hero-stat">🛡️ Бэклайн</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-a">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-4"/><path d="M12 9v.01"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Freja (SR) <span class="tier tier-a">A</span></h4>
-                        <div class="hero-role">Fighter · Melee DPS · Gen 1</div>
-                        <p>Лучший SR-герой. Двойные удары + AoE. Не требует поддержки. Но SR не масштабируется в Gen 2.</p>
-                        <div class="hero-stats">
-                            <span class="hero-stat">⚔️ ATK%</span>
-                            <span class="hero-stat">⚠️ Временная замена</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- HEROES -->
+            <div class="panel" id="tab-heroes"></div>
 
-                <div class="section-header">
-                    <span class="section-title">🥉 B-Tier</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-b">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Chef <span class="tier tier-b">B</span></h4>
-                        <div class="hero-role">Tank + Healer · Gen 1</div>
-                        <p>Ранний танк/хил. Цифры не тянут в высокие уровни. Заменить при первой возможности.</p>
-                    </div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-b">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 11l2 2 6-6"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Ghost <span class="tier tier-b">B</span></h4>
-                        <div class="hero-role">Tank · Rare</div>
-                        <p>Надёжный Rare-танк для старта. Не инвестируй долгосрочно.</p>
-                    </div>
-                </div>
-
-                <div class="section-header" style="opacity:0.7;">
-                    <span class="section-title">💩 C-Tier</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="hero-row">
-                    <div class="hero-avatar avatar-c">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                    </div>
-                    <div class="hero-info">
-                        <h4>Lucky, Rusty, Sarge, Ray <span class="tier tier-c">C</span></h4>
-                        <div class="hero-role">Filler</div>
-                        <p>Легко получить, легко прокачать, ноль пользы. Рэй — главное разочарование Gen 2. Используй только первые 2 недели.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== SQUADS ===== -->
-            <div class="panel" id="tab-squads">
-                <div class="section-header">
-                    <span class="section-title">🥇 Основной отряд</span>
-                    <div class="section-line"></div>
-                </div>
-                <p class="section-desc">4 Guardians + 1 Gunner. Активирует +15% HP всей команде.</p>
-                <div class="formation">
-                    <div class="formation-grid">
-                        <div class="formation-slot front">
-                            <div class="slot-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-                            </div>
-                            <div class="slot-name">Nicola</div>
-                            <div class="slot-role">Tank</div>
-                        </div>
-                        <div class="formation-slot front">
-                            <div class="slot-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                            </div>
-                            <div class="slot-name">Layla</div>
-                            <div class="slot-role">Front Heal</div>
-                        </div>
-                        <div class="formation-slot back">
-                            <div class="slot-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                            </div>
-                            <div class="slot-name">Rosie</div>
-                            <div class="slot-role">AoE Carry</div>
-                        </div>
-                        <div class="formation-slot back">
-                            <div class="slot-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="3"/></svg>
-                            </div>
-                            <div class="slot-name">Tarzan</div>
-                            <div class="slot-role">Backline DPS</div>
-                        </div>
-                        <div class="formation-slot back">
-                            <div class="slot-icon">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                            </div>
-                            <div class="slot-name">Tara</div>
-                            <div class="slot-role">DEF Buff</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tip">
-                    <div class="tip-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-                    </div>
-                    <div>
-                        <h4>Почему Layla на фронте?</h4>
-                        <p>Её скил даёт +26% HP. Вместе с +15% Guardian-бонусом она становится вторым танком, который лечит под огнём. За спиной Николы — практически неуязвима.</p>
-                    </div>
-                </div>
-
-                <div class="section-header">
-                    <span class="section-title">🥈 Альтернативы</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>🧱 Бюджетный</h3>
-                        <p>Ghost → Chef → Becca → Travis → Freja (SR)</p>
-                        <div class="tag tag-accent">Для старта</div>
-                    </div>
-                    <div class="card">
-                        <h3>⚡ Агрессивный</h3>
-                        <p>Nicola → Layla → Rosie → Tarzan → Becca</p>
-                        <div class="tag tag-orange">Больше урона</div>
-                    </div>
-                    <div class="card">
-                        <h3>🏟️ 3v3 Арена</h3>
-                        <p><strong>1:</strong> Nicola + Layla + Rosie<br><strong>2:</strong> Tarzan + Tara + Becca</p>
-                        <div class="tag tag-green">PvP сплит</div>
-                    </div>
-                </div>
-
-                <div class="section-header">
-                    <span class="section-title">🎯 Приоритеты оружия</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr><th>#</th><th>Герой</th><th>Эффект</th><th>Почему</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>1</td><td>Rosie</td><td>+ATK & DEF команде</td><td>Первый слой командного DEF</td></tr>
-                            <tr><td>2</td><td>Layla</td><td>+ATK, +DEF</td><td>Усиливает танковую Лайлу</td></tr>
-                            <tr><td>3</td><td>Tara</td><td>+10% DEF команде</td><td>Второй слой DEF — складывается</td></tr>
-                            <tr><td>4</td><td>Nicola</td><td>Self DEF Buff</td><td>Личный щит + командные баффы</td></tr>
-                            <tr><td>5</td><td>Tarzan</td><td>Team buff</td><td>Усиливает урон, менее критично</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- ===== GEAR ===== -->
-            <div class="panel" id="tab-gear">
-                <div class="section-header">
-                    <span class="section-title">🛡️ Типы снаряжения</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.89 1.45l8 4A2 2 0 0122 7.24v9.53a2 2 0 01-1.11 1.79l-8 4a2 2 0 01-1.79 0l-8-4a2 2 0 01-1.1-1.8V7.24a2 2 0 011.11-1.79l8-4a2 2 0 011.78 0z"/><polyline points="2.32 6.16 12 11 21.68 6.16"/><line x1="12" y1="22.76" x2="12" y2="11"/></svg>
-                            Hero Gear
-                        </h3>
-                        <p>Личная экипировка: шлем (атака), жилет (защита), штаны (здоровье). Качай 5–6 комплектов.</p>
-                        <div class="tag tag-accent">Приоритет #1</div>
-                    </div>
-                    <div class="card">
-                        <h3>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                            Chief Gear
-                        </h3>
-                        <p>Глобальный буст для всего аккаунта. Материалы — клей и чертежи. Источник — «Преследование Гулиона».</p>
-                        <div class="tag tag-orange">Приоритет #2</div>
-                    </div>
-                    <div class="card">
-                        <h3>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                            Signature Gear
-                        </h3>
-                        <p>Именное снаряжение SSR. Уникальные бонусы. Качай максимум 1–2 героев.</p>
-                        <div class="tag tag-purple">Приоритет #3</div>
-                    </div>
-                </div>
-
-                <div class="section-header">
-                    <span class="section-title">💎 Редкость</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr><th>Вид</th><th>Цвет</th><th>Сила</th><th>Прирост</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td style="color:#64748b">⚪ Тряпка</td><td>Белый</td><td>885</td><td>—</td></tr>
-                            <tr><td style="color:#4ade80">🟢 Кожа</td><td>Зелёный</td><td>1 771</td><td>+100%</td></tr>
-                            <tr><td style="color:#60a5fa">🔵 Железо</td><td>Синий</td><td>3 541</td><td>+100%</td></tr>
-                            <tr><td style="color:#a78bfa">🟣 Бронза</td><td>Фиолетовый</td><td>7 083</td><td>+100%</td></tr>
-                            <tr><td style="color:#fbbf24;font-weight:700">🟠 Золото</td><td>Оранжевый</td><td>17 707</td><td>+150%</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="tip">
-                    <div class="tip-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-                    </div>
-                    <div>
-                        <h4>Золото без звёзд > бронза со звёздами</h4>
-                        <p>Первая звезда даёт +25%. Но лучше сначала одеть всех 5 героев в золото (прирост 150%), а потом вкладывать в звёзды.</p>
-                    </div>
-                </div>
-
-                <div class="section-header">
-                    <span class="section-title">🔨 Перековка</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>🛡️ Танки</h3>
-                        <p>Damage Reduction + HP%. Затем немного атаки для контратак.</p>
-                    </div>
-                    <div class="card">
-                        <h3>⚔️ Дамагеры</h3>
-                        <p>Auto-Attack Damage Bonus + Crit / Crit Damage.</p>
-                    </div>
-                    <div class="card">
-                        <h3>💚 Саппорты</h3>
-                        <p>Healing Bonus + HP% + Defense. Главное — выживаемость.</p>
-                    </div>
-                </div>
-                <div class="tip warning">
-                    <div class="tip-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    </div>
-                    <div>
-                        <h4>Правило «выпало — зафиксировал»</h4>
-                        <p>Если выпал хороший стат — <strong>фиксируй</strong> и не крути дальше. Перекованный фиолетовый часто бьёт сырой оранжевый.</p>
-                    </div>
-                </div>
-
-                <div class="section-header">
-                    <span class="section-title">📅 Ивенты</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            Турбо Черепашка
-                        </h3>
-                        <p>Главный ивент. Очки за улучшение, усиление и перековку. <strong>Копи Gear Scraps заранее.</strong></p>
-                        <div class="tag tag-accent">Понедельник</div>
-                    </div>
-                    <div class="card">
-                        <h3>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            Power Play
-                        </h3>
-                        <p>Альтернативный ивент. Иногда совпадает с Турбо Черепашкой — выгода утраивается.</p>
-                        <div class="tag tag-orange">Периодический</div>
-                    </div>
-                    <div class="card">
-                        <h3>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-                            Преследование Гулиона
-                        </h3>
-                        <p>Альянсовое событие. Чем больше урона — тем больше Adhesives для Chief Gear.</p>
-                        <div class="tag tag-green">Chief Gear</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== RESOURCES ===== -->
+            <!-- RESOURCES -->
             <div class="panel" id="tab-resources">
-                <div class="section-header">
-                    <span class="section-title">⚡ Электростанция</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table" id="resourceTable">
-                        <thead>
-                            <tr><th>№</th><th>Еда</th><th>Древесина</th><th>Металл</th><th>Топливо</th><th>Время</th><th>Требования</th></tr>
-                        </thead>
-                        <tbody id="resourceBody">
-                            <!-- Заполняется JS -->
-                        </tbody>
-                    </table>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+                    <!-- ЗАГОЛОВОК -->
+                    <div class="flex items-center gap-3 mb-2">
+                        <img src="images/resources/chest-icon.png" alt="Ресурсы" class="w-7 h-7 object-contain"
+                            onerror="this.style.display='none'; this.parentElement.innerHTML += '<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'28\' height=\'28\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'#fbbf24\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><rect x=\'2\' y=\'7\' width=\'20\' height=\'14\' rx=\'2\' ry=\'2\'/><path d=\'M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16\'/></svg>'">
+                        <h1 class="text-2xl font-bold kinetic-title">Ресурсы</h1>
+                        <div class="flex-1 h-px bg-gradient-to-r from-gold/20 to-transparent"></div>
+                    </div>
+
+                    <!-- БАФФЫ -->
+                    <div class="mb-8">
+                        <div class="flex items-center gap-3 mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                <path d="M2 17l10 5 10-5" />
+                                <path d="M2 12l10 5 10-5" />
+                            </svg>
+                            <h2 class="text-lg font-bold text-gold kinetic-title">Баффы на скорость сбора ресурсов</h2>
+                            <div class="flex-1 h-px bg-gradient-to-r from-gold/20 to-transparent"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4 kinetic-title">
+                            Ускорение сбора ресурсов на карте. Складываются друг с другом!
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 stagger-container" id="buffsContainer"></div>
+
+                        <div class="mt-4 glass rounded-xl p-4 border border-gold/20 bg-gold-soft/10 kinetic-title">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-black/50 flex items-center justify-center flex-shrink-0 border border-gold/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                                        <circle cx="12" cy="10" r="3" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-sm font-semibold text-gold">Где искать?</span>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
+                                        <div class="bg-black/30 rounded-lg p-3 border border-white/5">
+                                            <div class="flex items-center gap-2">
+                                                <img src="images/resources/personal-buff.png" alt="Личный бафф"
+                                                    class="w-8 h-8 object-cover rounded"
+                                                    onerror="this.style.display='none'; this.parentElement.innerHTML += '<svg class=\'w-8 h-8 text-blue-400\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\'><rect x=\'2\' y=\'7\' width=\'20\' height=\'14\' rx=\'2\' ry=\'2\'/><path d=\'M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16\'/></svg>'">
+                                                <div>
+                                                    <p class="text-xs font-semibold text-white">Личный бафф</p>
+                                                    <p class="text-[10px] text-gray-400">Бусты (⚡) → Эффекты</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-black/30 rounded-lg p-3 border border-white/5">
+                                            <div class="flex items-center gap-2">
+                                                <img src="images/resources/alliance-buff.png" alt="Союзный бафф"
+                                                    class="w-8 h-8 object-cover rounded"
+                                                    onerror="this.style.display='none'; this.parentElement.innerHTML += '<svg class=\'w-8 h-8 text-purple-400\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\'><path d=\'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\'/></svg>'">
+                                                <div>
+                                                    <p class="text-xs font-semibold text-white">Союзный бафф</p>
+                                                    <p class="text-[10px] text-gray-400">Союз → Бонусы / Политика</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-black/30 rounded-lg p-3 border border-white/5">
+                                            <div class="flex items-center gap-2">
+                                                <img src="images/resources/state-buff.png" alt="Штатный бафф"
+                                                    class="w-8 h-8 object-cover rounded"
+                                                    onerror="this.style.display='none'; this.parentElement.innerHTML += '<svg class=\'w-8 h-8 text-yellow-400\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\'><path d=\'M12 2L2 7l10 5 10-5-10-5z\'/><path d=\'M2 17l10 5 10-5\'/><path d=\'M2 12l10 5 10-5\'/></svg>'">
+                                                <div>
+                                                    <p class="text-xs font-semibold text-white">Штатный бафф</p>
+                                                    <p class="text-[10px] text-gray-400">Штат → Бонусы / Политика</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ТАБЛИЦА -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-2 flex-wrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                                <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+                            </svg>
+                            <h2 class="text-lg font-bold text-gold kinetic-title">Затраты на улучшение электростанции</h2>
+                            <div class="flex-1 h-px bg-gradient-to-r from-gold/20 to-transparent"></div>
+                            <button id="toggleTableBtn" onclick="toggleResourceTable()"
+                                class="glass-button px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 border border-gold/60 hover:border-gold transition-all flex-shrink-0">
+                                <span id="toggleTableIcon">▾</span>
+                                <span id="toggleTableText">Свернуть таблицу</span>
+                            </button>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-3 kinetic-title">
+                            Таблица затрат на <strong class="text-gold">улучшение с уровня N до уровня N+1</strong>.
+                            <br>
+                            <span class="text-xs text-gray-500">Значения могут отличаться в зависимости от VIP-статуса,
+                                бонусов навыков и экипировки губернатора.</span>
+                        </p>
+
+                        <div id="resourceTableWrapper" data-collapsed="false"
+                            style="max-height: 3000px; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                            <div class="table-wrap">
+                                <table class="data-table" id="resourceTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Уровень</th>
+                                            <th>Еда</th>
+                                            <th>Древесина</th>
+                                            <th>Металл</th>
+                                            <th>Топливо</th>
+                                            <th>Время</th>
+                                            <th>Требования</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resourceBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- ===== TIPS ===== -->
-            <div class="panel" id="tab-tips">
-                <div class="section-header">
-                    <span class="section-title">🧠 Топ-10 советов</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="tip"><div class="tip-icon">1️⃣</div><div><h4>Качай 5 комплектов — не больше</h4><p>Основной отряд = 5 героев. Снаряжение остальных — «донорское». Экономия — 20-30%.</p></div></div>
-                <div class="tip"><div class="tip-icon">2️⃣</div><div><h4>По 10 уровней за раз</h4><p>Каждые 10 уровней открывают бонус. Не распыляйся на 12, 15 — иди до 20, 30, 40.</p></div></div>
-                <div class="tip"><div class="tip-icon">3️⃣</div><div><h4>Бронза → Золото без потерь</h4><p>Прокачанную бронзу можно вложить в золото. Опыт переносится полностью.</p></div></div>
-                <div class="tip"><div class="tip-icon">4️⃣</div><div><h4>Танки в золото первыми</h4><p>Танк живёт — команда бьёт. Приоритет: танк → дамагер → саппорт.</p></div></div>
-                <div class="tip"><div class="tip-icon">5️⃣</div><div><h4>Копи Scraps под ивенты</h4><p>Не трать Gear Scraps в воскресенье. Потерпи до понедельника — Турбо Черепашка даст двойную отдачу.</p></div></div>
-                <div class="tip warning"><div class="tip-icon">6️⃣</div><div><h4>Не покупай фиолетовое в магазинах</h4><p>Дорого и неэффективно. Фарми через Экспедицию Славы и Турбо Черепашку.</p></div></div>
-                <div class="tip"><div class="tip-icon">7️⃣</div><div><h4>Экспедиция Славы — лайфхак</h4><p>После прохождения поля отряд блокируется. Но снаряжение можно <strong>снять</strong> и передать слабой пачке для второго поля.</p></div></div>
-                <div class="tip"><div class="tip-icon">8️⃣</div><div><h4>Перековка под роль</h4><p>Танк — Damage Reduction + HP%. Дамагер — Auto-Attack + Crit. Саппорт — Healing + Survival.</p></div></div>
-                <div class="tip"><div class="tip-icon">9️⃣</div><div><h4>Chief Gear — равномерно</h4><p>Не вливай всё в один слот. Качай весь комплект Шефа равномерно. Бонус на все марши.</p></div></div>
-                <div class="tip"><div class="tip-icon">🔟</div><div><h4>Signature Gear — только топам</h4><p>Максимум 1–2 героя (Рози + Никола). Ресурсы ограничены, командные бонусы ценнее.</p></div></div>
+            <!-- ACTIVITIES -->
+            <div class="panel" id="tab-activities"></div>
 
-                <div class="section-header">
-                    <span class="section-title">🗺️ Дорожная карта</span>
-                    <div class="section-line"></div>
-                </div>
-                <div class="card" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-                    <div style="font-size:28px;flex-shrink:0;">1️⃣</div>
-                    <div style="flex:1;min-width:160px;">
-                        <h3>Hero Gear — 5 комплектов до золота</h3>
-                        <p>Равномерно подними все 3 слота. Потом качай по 10 уровней. Переноси бронзу в золото без потерь.</p>
-                    </div>
-                </div>
-                <div class="card" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-                    <div style="font-size:28px;flex-shrink:0;">2️⃣</div>
-                    <div style="flex:1;min-width:160px;">
-                        <h3>Chief Gear — глобальный буст</h3>
-                        <p>Фарми клей в «Преследовании Гулиона». Качай равномерно все слоты. Это усилит ВСЕХ героев.</p>
-                    </div>
-                </div>
-                <div class="card" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-                    <div style="font-size:28px;flex-shrink:0;">3️⃣</div>
-                    <div style="flex:1;min-width:160px;">
-                        <h3>Перековка под роль</h3>
-                        <p>Когда откроется — настрой статы под каждого героя. Фиксируй хорошие, не гонись за идеалом.</p>
-                    </div>
-                </div>
-                <div class="card" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-                    <div style="font-size:28px;flex-shrink:0;">4️⃣</div>
-                    <div style="flex:1;min-width:160px;">
-                        <h3>Signature Gear — точечно</h3>
-                        <p>Только 1–2 главных SSR. Ресурсы ограничены, выбирай героев с командными бонусами.</p>
-                    </div>
-                </div>
-            </div>
+            <!-- GEAR -->
+            <div class="panel" id="tab-gear"></div>
 
-            <!-- ===== DONATE ===== -->
-            <div class="panel" id="tab-donate">
-                <div class="section-header">
-                    <span class="section-title">❤️ Поддержать проект</span>
-                    <div class="section-line"></div>
+            <!-- TIPS -->
+            <div class="panel" id="tab-tips"></div>
+
+            <footer class="py-8 border-t border-white/5 mt-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <p class="text-sm text-gray-500">MDG «Мир Дружба» — Tiles Survive Portal</p>
+                    <p class="text-xs text-gray-600 mt-1">DEV AVANGARD</p>
                 </div>
-                <p class="section-desc">Ваша поддержка помогает нам развивать портал и создавать новые гайды. Спасибо! 🙏</p>
-
-                <div class="donate-grid">
-                    <div class="donate-card">
-                        <span class="icon-big">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-                        </span>
-                        <span class="amount">100 ₽</span>
-                        <span class="label">Спасибо за чашку кофе</span>
-                        <span class="bonus">+ бонус на портале</span>
-                        <button class="btn-donate">Поддержать</button>
-                    </div>
-                    <div class="donate-card">
-                        <span class="icon-big">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                        </span>
-                        <span class="amount">300 ₽</span>
-                        <span class="label">На пиццу для команды</span>
-                        <span class="bonus">+ эксклюзивный гайд</span>
-                        <button class="btn-donate">Поддержать</button>
-                    </div>
-                    <div class="donate-card">
-                        <span class="icon-big">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        </span>
-                        <span class="amount">500 ₽</span>
-                        <span class="label">Развитие портала</span>
-                        <span class="bonus">+ доступ к закрытому чату</span>
-                        <button class="btn-donate">Поддержать</button>
-                    </div>
-                    <div class="donate-card">
-                        <span class="icon-big">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        </span>
-                        <span class="amount">1 000 ₽</span>
-                        <span class="label">VIP-поддержка</span>
-                        <span class="bonus">+ всё из предыдущих + имя в списке</span>
-                        <button class="btn-donate">Поддержать</button>
-                    </div>
-                    <div class="donate-card">
-                        <span class="icon-big">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                        </span>
-                        <span class="amount">2 500 ₽</span>
-                        <span class="label">Легендарный спонсор</span>
-                        <span class="bonus">+ персональный гайд под вас</span>
-                        <button class="btn-donate">Поддержать</button>
-                    </div>
-                </div>
-
-                <div class="donate-info">
-                    <p>💳 <span class="highlight">Карта:</span> 1234 5678 9012 3456</p>
-                    <p>📱 <span class="highlight">СБП:</span> +7 (999) 123-45-67 (Тинькофф)</p>
-                    <p style="margin-top:8px;font-size:12px;color:#94a3b8;">Все донаты идут на развитие портала и хостинг. Спасибо, что вы с нами! ❤️</p>
-                </div>
-
-                <div class="ad-banner" style="margin-top:12px;">
-                    <span class="ad-label">🔥 Топ</span>
-                    <div class="ad-content">
-                        <span class="ad-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        </span>
-                        <span class="ad-text">Получи бонус за пополнение через Donation Shop! <span class="ad-link">Подробнее →</span></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== ФУТЕР ===== -->
-            <div class="footer">
-                <div class="footer-line"></div>
-                <div class="footer-text"><span>✦</span> Союз [MDG] «Мир Дружба» 839 штат <span>✦</span>
-                DEV AVANGARD</div>
-            </div>
-
+            </footer>
         </div>
     </div>
 
+    <!-- FLOATING DOCK (Dynamic Island стиль) -->
+    <div class="floating-dock" id="floatingDock">
+        <button onclick="switchTab('tab-home')" class="active">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Главная</span>
+        </button>
+        <button onclick="switchTab('tab-squads')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a2 2 0 00-2-2H4a2 2 0 00-2 2v4a2 2 0 002 2h8a2 2 0 002-2z"/><path d="M8 15v2"/><path d="M12 15v2"/><path d="M20 15v2"/><path d="M14 5l3 3 6-6"/><path d="M18 11v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8"/></svg>
+            <span>Отряды</span>
+        </button>
+        <button onclick="switchTab('tab-heroes')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M8 3.13a4 4 0 010 7.75"/></svg>
+            <span>Герои</span>
+        </button>
+        <button onclick="switchTab('tab-resources')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            <span>Ресурсы</span>
+        </button>
+        <button onclick="switchTab('tab-activities')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Действия</span>
+        </button>
+        <button onclick="switchTab('tab-gear')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            <span>Снаряж.</span>
+        </button>
+        <button onclick="switchTab('tab-tips')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <span>Советы</span>
+        </button>
+    </div>
+
+    <script src="content.js"></script>
+    <script src="render.js"></script>
     <script src="app.js"></script>
+
+    <!-- ИНИЦИАЛИЗАЦИЯ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            renderResources();
+            // Активируем анимации после рендера
+            setTimeout(function() {
+                if (typeof initKineticTitles === 'function') initKineticTitles();
+                if (typeof initTiltEffect === 'function') initTiltEffect();
+            }, 300);
+        });
+    </script>
+
 </body>
+
 </html>

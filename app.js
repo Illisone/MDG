@@ -2,76 +2,283 @@
 //  MDG ПОРТАЛ — ОСНОВНАЯ ЛОГИКА
 // ============================================================
 
-// ----- ПЕРЕКЛЮЧЕНИЕ ТАБОВ -----
 function switchTab(tabId) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-
-    const panel = document.getElementById(tabId);
+    document.querySelectorAll('.panel').forEach(function(p) {
+        p.classList.remove('active');
+    });
+    
+    var panel = document.getElementById(tabId);
     if (panel) panel.classList.add('active');
 
-    const tabBtn = document.querySelector(`.tab[data-tab="${tabId}"]`);
+    document.querySelectorAll('.tab').forEach(function(t) {
+        t.classList.remove('active');
+    });
+    var tabBtn = document.querySelector('.tab[data-tab="' + tabId + '"]');
     if (tabBtn) tabBtn.classList.add('active');
 
-    const contentArea = document.getElementById('contentArea');
-    if (contentArea) contentArea.scrollTop = 0;
-
-    // Обновляем состояние стрелки-подсказки
-    setTimeout(updateScrollHint, 50);
-}
-
-// ----- ИНИЦИАЛИЗАЦИЯ ТАБОВ (ВАЖНО: ТОЛЬКО ОДИН РАЗ) -----
-document.addEventListener('DOMContentLoaded', function() {
-    // Назначаем обработчики на все табы
-    document.querySelectorAll('.tab[data-tab]').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const tabId = this.dataset.tab;
-            switchTab(tabId);
-        });
+    var labels = {
+        'tab-home': 'Главная',
+        'tab-squads': 'Отряды',
+        'tab-heroes': 'Герои',
+        'tab-resources': 'Ресурсы',
+        'tab-activities': 'Действия',
+        'tab-gear': 'Снаряж.',
+        'tab-tips': 'Советы'
+    };
+    
+    // Обновляем floating-dock
+    document.querySelectorAll('.floating-dock button').forEach(function(btn) {
+        btn.classList.toggle('active', btn.textContent.trim() === labels[tabId]);
     });
 
-    // Инициализация стрелки
-    setTimeout(updateScrollHint, 100);
-});
+    var mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenu) mobileMenu.classList.add('hidden');
 
-// ----- УПРАВЛЕНИЕ СТРЕЛКОЙ-ПОДСКАЗКОЙ В МЕНЮ -----
-function updateScrollHint() {
-    const tabsWrap = document.querySelector('.tabs-wrap');
-    const hint = document.querySelector('.tabs-scroll-hint');
-    if (!tabsWrap || !hint) return;
+    closeSearchDesktop();
+    closeSearchMobile();
+}
 
-    // Показываем стрелку, если контент выходит за пределы видимой области
-    const isScrollable = tabsWrap.scrollWidth > tabsWrap.clientWidth;
-    const isAtEnd = tabsWrap.scrollLeft + tabsWrap.clientWidth >= tabsWrap.scrollWidth - 2;
+// ============================================================
+//  ПОИСК (десктоп)
+// ============================================================
+var searchToggleDesktop = document.getElementById('searchToggleDesktop');
+var searchDesktopContainer = document.getElementById('searchDesktopContainer');
+var searchDesktopInput = document.getElementById('searchDesktopInput');
+var searchDesktopResults = document.getElementById('searchDesktopResults');
+var searchDesktopClose = document.getElementById('searchDesktopClose');
 
-    if (isScrollable && !isAtEnd) {
-        hint.classList.remove('hidden');
+var searchOpenDesktop = false;
+var searchDataDesktop = [];
+
+function buildSearchDataDesktop() {
+    searchDataDesktop = [];
+    document.querySelectorAll('#tab-heroes .glass-card').forEach(function(card) {
+        var name = card.querySelector('h4')?.textContent?.trim() || '';
+        var desc = card.querySelector('p')?.textContent?.trim() || '';
+        if (name) {
+            searchDataDesktop.push({ tab: 'tab-heroes', label: 'Герои', title: name, desc: desc, content: name + ' ' + desc });
+        }
+    });
+    document.querySelectorAll('#tab-tips .glass').forEach(function(tip) {
+        var title = tip.querySelector('h4')?.textContent?.trim() || '';
+        var desc = tip.querySelector('p')?.textContent?.trim() || '';
+        if (title) {
+            searchDataDesktop.push({ tab: 'tab-tips', label: 'Советы', title: title, desc: desc, content: title + ' ' + desc });
+        }
+    });
+    document.querySelectorAll('#tab-squads .glass').forEach(function(squad) {
+        var title = squad.querySelector('h3')?.textContent?.trim() || '';
+        var desc = squad.querySelector('p')?.textContent?.trim() || '';
+        if (title) {
+            searchDataDesktop.push({ tab: 'tab-squads', label: 'Отряды', title: title, desc: desc, content: title + ' ' + desc });
+        }
+    });
+    document.querySelectorAll('#tab-gear .glass').forEach(function(gear) {
+        var title = gear.querySelector('h4')?.textContent?.trim() || '';
+        var desc = gear.querySelector('p')?.textContent?.trim() || '';
+        if (title) {
+            searchDataDesktop.push({ tab: 'tab-gear', label: 'Снаряжение', title: title, desc: desc, content: title + ' ' + desc });
+        }
+    });
+}
+
+function openSearchDesktop() {
+    if (searchOpenDesktop) { closeSearchDesktop(); return; }
+    buildSearchDataDesktop();
+    searchDesktopContainer.classList.add('open');
+    searchOpenDesktop = true;
+    setTimeout(function() {
+        searchDesktopInput.focus();
+        searchDesktopInput.select();
+    }, 300);
+    if (searchDesktopInput.value.trim()) {
+        doSearchDesktop(searchDesktopInput.value);
     } else {
-        hint.classList.add('hidden');
+        searchDesktopResults.innerHTML = '';
     }
 }
 
-// Обработчик скролла для скрытия стрелки
-const tabsWrap = document.querySelector('.tabs-wrap');
-if (tabsWrap) {
-    tabsWrap.addEventListener('scroll', updateScrollHint);
+function closeSearchDesktop() {
+    searchDesktopContainer.classList.remove('open');
+    searchOpenDesktop = false;
+    searchDesktopInput.value = '';
+    searchDesktopResults.innerHTML = '';
 }
 
-// Обновляем при ресайзе
-window.addEventListener('resize', updateScrollHint);
-
-// ----- ДОНАТ КНОПКИ -----
-document.querySelectorAll('.btn-donate').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const card = this.closest('.donate-card');
-        const amount = card?.querySelector('.amount')?.textContent || 'сумма';
-        alert('❤️ Спасибо за поддержку на ' + amount + '!\n\nСвяжитесь с администратором для получения бонусов.\nTelegram: @mdg_support');
+function doSearchDesktop(query) {
+    var q = query.toLowerCase().trim();
+    if (!q) {
+        searchDesktopResults.innerHTML = '';
+        return;
+    }
+    var results = searchDataDesktop.filter(function(item) {
+        return item.content.toLowerCase().includes(q) || item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
     });
+    if (results.length === 0) {
+        searchDesktopResults.innerHTML = '<div class="text-gray-500 text-sm text-center py-3">Ничего не найдено</div>';
+        return;
+    }
+    var html = results.slice(0, 10).map(function(item) {
+        return '<div class="search-result-item" data-tab="' + item.tab + '"><div class="title">' + item.title + '</div>' + (item.desc ? '<div class="desc">' + item.desc + '</div>' : '') + '<span class="tag">' + item.label + '</span></div>';
+    }).join('');
+    if (results.length > 10) {
+        html += '<div class="text-xs text-gray-600 text-center pt-1">+ ещё ' + (results.length - 10) + '</div>';
+    }
+    searchDesktopResults.innerHTML = html;
+    searchDesktopResults.querySelectorAll('.search-result-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var tab = this.dataset.tab;
+            closeSearchDesktop();
+            switchTab(tab);
+        });
+    });
+}
+
+if (searchToggleDesktop) {
+    searchToggleDesktop.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openSearchDesktop();
+    });
+}
+
+if (searchDesktopInput) {
+    searchDesktopInput.addEventListener('input', function() { doSearchDesktop(this.value); });
+    searchDesktopInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') { closeSearchDesktop(); if (searchToggleDesktop) searchToggleDesktop.focus(); }
+        if (e.key === 'Enter') {
+            var first = searchDesktopResults.querySelector('.search-result-item');
+            if (first) first.click();
+        }
+    });
+}
+
+if (searchDesktopClose) {
+    searchDesktopClose.addEventListener('click', closeSearchDesktop);
+}
+
+document.addEventListener('click', function(e) {
+    if (searchOpenDesktop && !e.target.closest('#searchDesktopContainer') && !e.target.closest('#searchToggleDesktop')) {
+        closeSearchDesktop();
+    }
 });
 
-// ----- РЕСУРСЫ (ТАБЛИЦА) -----
-const RESOURCES_DATA = [
+// ============================================================
+//  ПОИСК (мобильный)
+// ============================================================
+var searchToggleMobile = document.getElementById('searchToggleMobile');
+var searchOverlay = document.getElementById('searchOverlay');
+var searchMobileInput = document.getElementById('searchMobileInput');
+var searchMobileResults = document.getElementById('searchMobileResults');
+
+var searchDataMobile = [];
+
+function buildSearchDataMobile() {
+    searchDataMobile = [];
+    document.querySelectorAll('#tab-heroes .glass-card').forEach(function(card) {
+        var name = card.querySelector('h4')?.textContent?.trim() || '';
+        var desc = card.querySelector('p')?.textContent?.trim() || '';
+        if (name) {
+            searchDataMobile.push({ tab: 'tab-heroes', label: 'Герои', title: name, desc: desc, content: name + ' ' + desc });
+        }
+    });
+    document.querySelectorAll('#tab-tips .glass').forEach(function(tip) {
+        var title = tip.querySelector('h4')?.textContent?.trim() || '';
+        var desc = tip.querySelector('p')?.textContent?.trim() || '';
+        if (title) {
+            searchDataMobile.push({ tab: 'tab-tips', label: 'Советы', title: title, desc: desc, content: title + ' ' + desc });
+        }
+    });
+    document.querySelectorAll('#tab-gear .glass').forEach(function(gear) {
+        var title = gear.querySelector('h4')?.textContent?.trim() || '';
+        var desc = gear.querySelector('p')?.textContent?.trim() || '';
+        if (title) {
+            searchDataMobile.push({ tab: 'tab-gear', label: 'Снаряжение', title: title, desc: desc, content: title + ' ' + desc });
+        }
+    });
+}
+
+function openSearchMobile() {
+    buildSearchDataMobile();
+    searchOverlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function() {
+        searchMobileInput.focus();
+        searchMobileInput.select();
+    }, 300);
+    if (searchMobileInput.value.trim()) {
+        doSearchMobile(searchMobileInput.value);
+    } else {
+        searchMobileResults.innerHTML = '';
+    }
+}
+
+function closeSearchMobile() {
+    searchOverlay.classList.add('hidden');
+    document.body.style.overflow = '';
+    searchMobileInput.value = '';
+    searchMobileResults.innerHTML = '';
+}
+
+function doSearchMobile(query) {
+    var q = query.toLowerCase().trim();
+    if (!q) {
+        searchMobileResults.innerHTML = '';
+        return;
+    }
+    var results = searchDataMobile.filter(function(item) {
+        return item.content.toLowerCase().includes(q) || item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
+    });
+    if (results.length === 0) {
+        searchMobileResults.innerHTML = '<div class="text-gray-500 text-sm text-center py-4">Ничего не найдено</div>';
+        return;
+    }
+    var html = results.slice(0, 20).map(function(item) {
+        return '<div class="search-result-item" data-tab="' + item.tab + '"><div class="title">' + item.title + '</div>' + (item.desc ? '<div class="desc">' + item.desc + '</div>' : '') + '<span class="tag">' + item.label + '</span></div>';
+    }).join('');
+    html += '<div class="text-xs text-gray-600 text-center pt-2">Найдено ' + results.length + ' результатов</div>';
+    searchMobileResults.innerHTML = html;
+    searchMobileResults.querySelectorAll('.search-result-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var tab = this.dataset.tab;
+            closeSearchMobile();
+            switchTab(tab);
+        });
+    });
+}
+
+if (searchToggleMobile) {
+    searchToggleMobile.addEventListener('click', openSearchMobile);
+}
+
+if (searchMobileInput) {
+    searchMobileInput.addEventListener('input', function() { doSearchMobile(this.value); });
+    searchMobileInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSearchMobile();
+        if (e.key === 'Enter') {
+            var first = searchMobileResults.querySelector('.search-result-item');
+            if (first) first.click();
+        }
+    });
+}
+
+// ============================================================
+//  ГОРЯЧИЕ КЛАВИШИ
+// ============================================================
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        if (window.innerWidth >= 1024) {
+            openSearchDesktop();
+        } else {
+            openSearchMobile();
+        }
+    }
+});
+
+// ============================================================
+//  РЕСУРСЫ (ДАННЫЕ)
+// ============================================================
+var RESOURCES_DATA = [
     { n: 1, food: 150, wood: 150, metal: '-', fuel: '-', time: '0:03', req: 'Дом 1 - 1' },
     { n: 2, food: 150, wood: 150, metal: '-', fuel: '-', time: '0:04', req: 'Лесопилка - 2' },
     { n: 3, food: 400, wood: 300, metal: 200, fuel: '-', time: '0:05', req: 'Теплица - 3, База героев - 1' },
@@ -104,224 +311,50 @@ const RESOURCES_DATA = [
     { n: 30, food: '255.94м', wood: '255.94м', metal: '51.19м', fuel: '12.80м', time: '42д 00:47:23', req: 'Лаборатория - 29, Казарма 1 - 29, Вестник войны - 26' }
 ];
 
-function renderResources() {
-    const tbody = document.getElementById('resourceBody');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-    const labels = ['№', 'Еда', 'Древесина', 'Металл', 'Топливо', 'Время', 'Требования'];
-    RESOURCES_DATA.forEach(function(r) {
-        const tr = document.createElement('tr');
-        const values = [r.n, r.food, r.wood, r.metal, r.fuel, r.time, r.req];
-        const cls = ['', 'col-eda', 'col-wood', 'col-metal', 'col-fuel', 'col-time', ''];
-        tr.innerHTML = values.map(function(v, i) {
-            return '<td data-label="' + labels[i] + '" class="' + cls[i] + '">' + v + '</td>';
-        }).join('');
-        tbody.appendChild(tr);
-    });
-}
-renderResources();
-
 // ============================================================
-//  ПОИСК — раскрывается в хедере
+//  ИНИЦИАЛИЗАЦИЯ
 // ============================================================
-const searchToggle = document.getElementById('searchToggle');
-const searchExpand = document.getElementById('searchExpand');
-const searchInput = document.getElementById('searchInput');
-const searchClear = document.getElementById('searchClear');
-const searchResultsDrop = document.getElementById('searchResultsDrop');
+document.addEventListener('DOMContentLoaded', function() {
+    renderHeroes();
+    renderSquads();
+    renderActivities();
+    renderTips();
+    renderNews();
+    renderGear();
+    renderBuffs();
 
-let searchOpen = false;
-const searchData = [];
-
-function buildSearchData() {
-    searchData.length = 0;
-
-    document.querySelectorAll('#tab-heroes .hero-row').forEach(function(row) {
-        const name = row.querySelector('h4')?.textContent?.trim() || '';
-        const role = row.querySelector('.hero-role')?.textContent?.trim() || '';
-        const desc = row.querySelector('p')?.textContent?.trim() || '';
-        if (name) {
-            searchData.push({
-                tab: 'tab-heroes',
-                tabLabel: 'Герои',
-                title: name,
-                desc: role + ' — ' + desc,
-                content: name + ' ' + role + ' ' + desc
-            });
-        }
-    });
-
-    document.querySelectorAll('#tab-tips .tip').forEach(function(tip) {
-        const title = tip.querySelector('h4')?.textContent?.trim() || '';
-        const text = tip.querySelector('p')?.textContent?.trim() || '';
-        if (title) {
-            searchData.push({
-                tab: 'tab-tips',
-                tabLabel: 'Советы',
-                title: title,
-                desc: text,
-                content: title + ' ' + text
-            });
-        }
-    });
-
-    document.querySelectorAll('#tab-home .card').forEach(function(card) {
-        const title = card.querySelector('h3')?.textContent?.trim() || '';
-        const desc = card.querySelector('p')?.textContent?.trim() || '';
-        const onclickAttr = card.getAttribute('onclick');
-        const tab = onclickAttr ? onclickAttr.match(/'(tab-[^']+)'/)?.[1] : null;
-        const tabId = tab || 'tab-home';
-        if (title) {
-            searchData.push({
-                tab: tabId,
-                tabLabel: 'Главная',
-                title: title,
-                desc: desc,
-                content: title + ' ' + desc
-            });
-        }
-    });
-
-    document.querySelectorAll('#tab-donate .donate-card').forEach(function(card) {
-        const amount = card.querySelector('.amount')?.textContent?.trim() || '';
-        const label = card.querySelector('.label')?.textContent?.trim() || '';
-        const bonus = card.querySelector('.bonus')?.textContent?.trim() || '';
-        if (amount) {
-            searchData.push({
-                tab: 'tab-donate',
-                tabLabel: 'Донат',
-                title: amount,
-                desc: label + ' ' + bonus,
-                content: amount + ' ' + label + ' ' + bonus
-            });
-        }
-    });
-}
-
-function openSearch() {
-    buildSearchData();
-    searchExpand.classList.add('open');
-    searchOpen = true;
-    setTimeout(function() { searchInput.focus(); }, 200);
-    if (searchInput.value.trim()) {
-        doSearch(searchInput.value);
-    } else {
-        showEmptyResults();
-    }
-}
-
-function closeSearch() {
-    searchExpand.classList.remove('open');
-    searchResultsDrop.classList.remove('active');
-    searchOpen = false;
-    searchInput.value = '';
-    searchResultsDrop.innerHTML = '';
-}
-
-function showEmptyResults() {
-    searchResultsDrop.innerHTML = '<div class="search-empty-drop"><span class="icon">🔍</span><p>Введите запрос для поиска</p></div>';
-    searchResultsDrop.classList.add('active');
-}
-
-function doSearch(query) {
-    var q = query.toLowerCase().trim();
-    if (!q) {
-        showEmptyResults();
-        return;
-    }
-
-    var results = searchData.filter(function(item) {
-        return item.content.toLowerCase().includes(q) ||
-               item.title.toLowerCase().includes(q) ||
-               item.desc.toLowerCase().includes(q);
-    });
-
-    if (results.length === 0) {
-        searchResultsDrop.innerHTML = '<div class="search-empty-drop"><span class="icon">😕</span><p>Ничего не найдено</p></div>';
-        searchResultsDrop.classList.add('active');
-        return;
-    }
-
-    var html = results.slice(0, 15).map(function(item) {
-        return '<div class="search-result-item" data-tab="' + item.tab + '">' +
-               '<div class="title">' + item.title + '</div>' +
-               (item.desc ? '<div class="desc">' + item.desc + '</div>' : '') +
-               '<span class="tag">' + item.tabLabel + '</span>' +
-               '</div>';
-    }).join('');
-
-    html += '<div class="search-hint-drop"><span>' + results.length + ' результатов</span><span>ESC — закрыть</span></div>';
-
-    searchResultsDrop.innerHTML = html;
-
-    searchResultsDrop.querySelectorAll('.search-result-item').forEach(function(el) {
-        el.addEventListener('click', function() {
-            var tab = this.dataset.tab;
-            closeSearch();
-            switchTab(tab);
+    document.querySelectorAll('.tab[data-tab]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchTab(this.dataset.tab);
         });
     });
 
-    searchResultsDrop.classList.add('active');
-}
-
-// Обработчики поиска
-if (searchToggle) {
-    searchToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (searchOpen) {
-            closeSearch();
-        } else {
-            openSearch();
-        }
-    });
-}
-
-if (searchClear) {
-    searchClear.addEventListener('click', function(e) {
-        e.stopPropagation();
-        searchInput.value = '';
-        searchInput.focus();
-        showEmptyResults();
-    });
-}
-
-if (searchInput) {
-    searchInput.addEventListener('input', function() {
-        doSearch(this.value);
-    });
-
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeSearch();
-            e.preventDefault();
-        }
-    });
-}
-
-document.addEventListener('click', function(e) {
-    if (searchOpen) {
-        var wrap = document.querySelector('.search-wrap');
-        if (wrap && !wrap.contains(e.target)) {
-            closeSearch();
-        }
+    var menuBtn = document.getElementById('menu-btn');
+    var mobileMenu = document.getElementById('mobile-menu');
+    if (menuBtn) {
+        menuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
     }
+    document.querySelectorAll('#mobile-menu .tab').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+
+    var progress = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', function() {
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        progress.style.width = (scrollTop / scrollHeight * 100) + '%';
+    }, { passive: true });
+
+    var navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    console.log('MDG «Мир Дружба» — Tiles Survive Portal');
+    console.log('Поиск: иконка в шапке или ⌘K');
 });
-
-document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        if (searchOpen) {
-            closeSearch();
-        } else {
-            openSearch();
-        }
-    }
-    if (e.key === 'Escape' && searchOpen) {
-        closeSearch();
-    }
-});
-
-console.log('MDG «Мир Дружба» — Tiles Survive Portal');
-console.log('🔍 Поиск: ⌘K или кнопка в шапке');
-console.log('📦 Все данные встроены в HTML');
