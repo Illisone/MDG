@@ -16,21 +16,7 @@ function switchTab(tabId) {
     var tabBtn = document.querySelector('.tab[data-tab="' + tabId + '"]');
     if (tabBtn) tabBtn.classList.add('active');
 
-    var labels = {
-        'tab-home': 'Главная',
-        'tab-squads': 'Отряды',
-        'tab-heroes': 'Герои',
-        'tab-resources': 'Ресурсы',
-        'tab-activities': 'Действия',
-        'tab-gear': 'Снаряж.',
-        'tab-tips': 'Советы'
-    };
-    
-    // Обновляем floating-dock
-    document.querySelectorAll('.floating-dock button').forEach(function(btn) {
-        btn.classList.toggle('active', btn.textContent.trim() === labels[tabId]);
-    });
-
+    // Закрываем мобильное меню
     var mobileMenu = document.getElementById('mobile-menu');
     if (mobileMenu) mobileMenu.classList.add('hidden');
 

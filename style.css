@@ -433,86 +433,6 @@ h1, h2, h3, h4, .font-heading {
     padding-left: 12px;
 }
 
-/* ----- FLOATING DOCK (Dynamic Island стиль) ----- */
-.floating-dock {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 50;
-    background: rgba(10, 14, 26, 0.8);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 28px;
-    padding: 6px 8px;
-    display: none;
-    gap: 2px;
-    box-shadow: 
-        0 8px 40px rgba(0, 0, 0, 0.6),
-        0 0 60px rgba(251, 191, 36, 0.02),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    min-width: 320px;
-    max-width: 95vw;
-    justify-content: center;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.floating-dock button {
-    flex: 0 1 auto;
-    text-align: center;
-    padding: 6px 10px;
-    font-size: 9px;
-    color: var(--text-muted);
-    background: transparent;
-    border: none;
-    border-radius: 16px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    min-width: 44px;
-    position: relative;
-}
-
-.floating-dock button.active {
-    color: var(--gold);
-    background: rgba(251, 191, 36, 0.08);
-    box-shadow: 0 0 30px rgba(251, 191, 36, 0.04);
-}
-
-.floating-dock button svg {
-    width: 18px;
-    height: 18px;
-}
-
-.floating-dock button span {
-    font-size: 8px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    opacity: 0.7;
-}
-
-.floating-dock button.active span {
-    opacity: 1;
-}
-
-.floating-dock button::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: 18px;
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.floating-dock button.active::before {
-    border-color: rgba(251, 191, 36, 0.1);
-}
-
 /* ----- ПОИСК ----- */
 #searchDesktopContainer {
     transition: max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, margin-top 0.4s ease;
@@ -607,27 +527,6 @@ h1, h2, h3, h4, .font-heading {
    ============================================================ */
 
 @media (max-width: 768px) {
-    .floating-dock {
-        display: flex;
-    }
-    
-    .sticky-bar {
-        display: none !important;
-    }
-    
-    footer {
-        padding-bottom: 92px;
-    }
-    
-    .tab {
-        padding: 8px 12px;
-        font-size: 11px;
-    }
-    .tab svg {
-        width: 15px;
-        height: 15px;
-    }
-
     /* BENTO-GRID для таблицы ресурсов на мобилке */
     #resourceTable thead {
         display: none;
@@ -749,24 +648,6 @@ h1, h2, h3, h4, .font-heading {
 @media (max-width: 480px) {
     #resourceTable tbody {
         grid-template-columns: 1fr;
-    }
-    .floating-dock {
-        min-width: unset;
-        width: auto;
-        padding: 4px 6px;
-        border-radius: 22px;
-        bottom: 16px;
-    }
-    .floating-dock button {
-        min-width: 36px;
-        padding: 4px 6px;
-    }
-    .floating-dock button svg {
-        width: 16px;
-        height: 16px;
-    }
-    .floating-dock button span {
-        font-size: 7px;
     }
 }
 
